@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Select from "react-select";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import CodeEditor from "../components/code-editor";
 
 export default function Home() {
