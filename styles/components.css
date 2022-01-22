@@ -1,0 +1,11 @@
+.select__container {
+    width: 200px;
+}
+.select__container .select {
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: content-box;
+}
+.select__container .select option {
+    padding: 5px 10px;
+}

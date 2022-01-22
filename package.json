@@ -1,0 +1,27 @@
+{
+  "name": "fast-vb",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@uiw/react-textarea-code-editor": "^1.4.4",
+    "monaco-editor": "^0.31.1",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "next": "12.0.8",
+    "next-remove-imports": "^1.0.6",
+    "next-transpile-modules": "^9.0.0",
+    "normalize.css": "^8.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-monaco-editor": "^0.47.0",
+    "react-select": "^5.2.2"
+  },
+  "devDependencies": {
+    "eslint": "8.7.0",
+    "eslint-config-next": "12.0.8"
+  }
+}
