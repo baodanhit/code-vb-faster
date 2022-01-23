@@ -1,21 +1,38 @@
 import Head from "next/head";
-import Image from "next/image";
 import Select from "react-select";
 import { useState, useEffect, useRef } from "react";
 import CodeEditor from "../components/code-editor";
+import { FcFlashOn } from "react-icons/fc";
+import jsonToVb from "../functions/json-to-vb";
+import vbToVb from "../functions/vb-to-vb";
 
 export default function Home() {
-  const inputEditorRef = useRef(null);
-  const outputEditorRef = useRef(null);
   const startButtonRef = useRef(null);
+  const inputLanguages = [
+    { value: "vb", label: "VB" },
+    { value: "json", label: "JSON" },
+  ];
   const options = [
     // { value: 0, label: "Public" },
     // { value: 1, label: "Protected" },
     { value: 2, label: "Private" },
   ];
+  const defaultValues = {
+    input: {
+      vb:
+        "Public Class User\n" +
+        "\tPublic Property Name As String\n" +
+        "\tPublic Property Email As String\n" +
+        "End Class",
+      json: '{\n\t"name":"User",\n\t"props":[\n\t\t{\n\t\t\t"name":"Name",\n\t\t\t"type":"String"\n\t\t},\n\t\t{\n\t\t\t"name":"Email",\n\t\t\t"type":"String"\n\t\t}\n\t]\n}',
+    },
+  };
 
   const [selectedOption, setSelectedOption] = useState(options[0]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputLanguage, setInputLanguage] = useState(inputLanguages[0]);
+  const [inputValue, setInputValue] = useState(
+    defaultValues.input[inputLanguage.value]
+  );
   const [outputValue, setOutputValue] = useState("");
 
   const colourStyles = {
@@ -29,126 +46,22 @@ export default function Home() {
     },
   };
 
-  const textProcessor = (inputString) => {
-    if (!inputString) return "";
-
-    // let classWrapper = getWrapper(inputString);
-    // //console.log(classWrapper);
-    // if (!classWrapper) {
-    //   return processedText;
-    // }
-
-    // let inputStringNoBreak = inputString
-    //   .replace(/\r?\n|\r/g, "")
-    //   .replace(/\s+/g, " ");
-
-    let classComponents = extractClass(inputString);
-    console.log(classComponents);
-    if (!classComponents) {
-      return "";
-    }
-
-    const processedText = generateOutputText(classComponents);
-
-    setOutputValue(processedText);
-  };
-
-  const getClassName = (inputString) => {
-    const reg = new RegExp(
-      /(?<=\Class).+?(?=(\Public|\Private|\Protected))/,
-      "gi"
-    );
-    const matchedValues = inputString.match(reg);
-    if (matchedValues) {
-      return matchedValues[0].trim();
-    }
-    return "";
-  };
-
-  const getWrapper = (inputString) => {
-    const reg = new RegExp(/^(.*)$/, "m");
-    const matchedValues = inputString.match(reg);
-    if (matchedValues) {
-      return matchedValues[0].trim();
-    }
-    return "";
-  };
-
-  const extractClass = (inputString) => {
-    let lines = inputString.match(/[^\r\n]+/g);
-    if (!lines) return null;
-
-    let wrapper = [];
-    let properties = [];
-
-    wrapper.push(lines.shift().trim());
-    wrapper.push(lines.pop().trim());
-
-    lines.forEach((line) => {
-      const property = getProperty(line);
-      if (property) {
-        properties.push(property);
-      }
-    });
-
-    return {
-      wrapper,
-      properties,
-    };
-  };
-
-  const getProperty = (inputString) => {
-    const reg = new RegExp(/(?<=\Property).+?(?=\As)/, "i");
-    const reg2 = new RegExp(/\b(\w+)\W*$/);
-    const matchedPropName = inputString.match(reg);
-    const matchedPropType = inputString.match(reg2);
-    if (matchedPropName && matchedPropType) {
-      return {
-        name: matchedPropName[0].trim(),
-        type: matchedPropType[0].trim(),
-      };
-    }
-    return null;
-  };
-
-  const generateOutputText = ({ wrapper, properties }) => {
-    let outputText = "";
-    outputText += wrapper[0] + "\n";
-    let privateProps = "";
-    let propertiesGetSet = "";
-    let privateTemplate = ({ privateName, type }) => {
-      return `\tPrivate ${privateName} As ${type}\n`;
-    };
-    let propertiesGetSetTemplate = ({ name, type, privateName }) => {
-      return (
-        `\tPublic Property ${name}() As ${type}\n` +
-        "\tGet\n" +
-        `\t\tReturn ${privateName}\n` +
-        "\tEnd Get\n" +
-        `\tSet(ByVal Value As ${type})\n` +
-        `\t\t${privateName} = Value\n` +
-        "\tEnd Set\n"
-      );
-    };
-    properties.forEach((prop) => {
-      prop.privateName =
-        "_" + prop.name.charAt(0).toLowerCase() + prop.name.slice(1);
-      privateProps += privateTemplate(prop);
-      propertiesGetSet += propertiesGetSetTemplate(prop);
-    });
-    outputText += privateProps;
-    outputText += propertiesGetSet;
-    outputText += wrapper[1];
-    return outputText;
-  };
+  useEffect(() => {
+    setInputValue(defaultValues.input[inputLanguage.value]);
+  }, [inputLanguage]);
 
   const onStartButtonClick = (e) => {
-    textProcessor(inputValue);
+    let outputCode = "";
+    if (inputLanguage.value === "vb") {
+      outputCode = vbToVb(inputValue);
+    } else {
+      outputCode = jsonToVb(inputValue);
+    }
+    if (outputCode) {
+      setOutputValue(outputCode);
+    } else {
+    }
   };
-
-  // useEffect(() => {
-  //   console.log(inputValue);
-  // }, [inputValue]);
 
   return (
     <div className="container">
@@ -162,12 +75,22 @@ export default function Home() {
         <h1 className="title">VB.NET Class Modifier</h1>
         <div className="workspace__header">
           <div className="workspace__header__left">
+            <Select
+              options={inputLanguages}
+              styles={colourStyles}
+              className="select-left"
+              isClearable={false}
+              isSearchable={false}
+              defaultValue={inputLanguage}
+              onChange={(option) => setInputLanguage(option)}
+            />
             <button
               className="button"
               ref={startButtonRef}
               onClick={onStartButtonClick}
             >
               Do it now!
+              <FcFlashOn></FcFlashOn>
             </button>
           </div>
           <div className="workspace__header__right">
@@ -188,7 +111,8 @@ export default function Home() {
             <div className="workspace__editor">
               <CodeEditor
                 value={inputValue}
-                ref={inputEditorRef}
+                buttons={["paste", "clear"]}
+                language={inputLanguage.value}
                 onChange={setInputValue}
               ></CodeEditor>
             </div>
@@ -197,7 +121,8 @@ export default function Home() {
             <div className="workspace__editor">
               <CodeEditor
                 value={outputValue}
-                ref={outputEditorRef}
+                buttons={["copy", "clear"]}
+                language="vb"
                 onChange={setOutputValue}
               ></CodeEditor>
             </div>

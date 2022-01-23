@@ -25,7 +25,6 @@ module.exports = withTM({
     config.plugins.push(
       new MonacoWebpackPlugin({
         languages: [
-          // "json",
           // "markdown",
           // "css",
           // "typescript",
@@ -35,6 +34,7 @@ module.exports = withTM({
           // "python",
           // "scss",
           // "yaml",
+          "json",
           "vb",
         ],
         filename: "static/[name].worker.js",
