@@ -3,7 +3,7 @@ export default function vbToVb(text) {
     if (!inputString) return "";
 
     let classComponents = extractClass(inputString);
-    console.log(classComponents);
+
     if (!classComponents) {
       return "";
     }
@@ -53,7 +53,6 @@ export default function vbToVb(text) {
       }
       if (isGetSetForPrivate(line, privateProps)) {
         const { lineEndIndex, subValue } = getSubGetSet(lines, index);
-        console.log(lineEndIndex, subValue);
         lines.splice(index, lineEndIndex - index);
         privatePropsGetSet.push(subValue);
         return;

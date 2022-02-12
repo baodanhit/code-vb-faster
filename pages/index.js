@@ -68,7 +68,7 @@ export default function Home() {
       <Head>
         <title>Code VB.NET Faster</title>
         <meta name="description" content="VB.NET class modifier" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
 
       <main className="main">
@@ -79,6 +79,7 @@ export default function Home() {
               options={inputLanguages}
               styles={colourStyles}
               className="select-left"
+              instanceId="inputLanguageSelect"
               isClearable={false}
               isSearchable={false}
               defaultValue={inputLanguage}
@@ -99,6 +100,7 @@ export default function Home() {
               options={options}
               styles={colourStyles}
               className="select"
+              instanceId="outputLanguageSelect"
               isClearable={false}
               isSearchable={false}
               defaultValue={selectedOption}
