@@ -34,10 +34,10 @@ module.exports = withTM({
           // "python",
           // "scss",
           // "yaml",
-          "json",
+          // "json",
           "vb",
         ],
-        filename: "static/[name].worker.js",
+        filename: "static/[name][hash:8].worker.js",
       })
     );
     return config;

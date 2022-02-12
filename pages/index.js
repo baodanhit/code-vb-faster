@@ -10,7 +10,7 @@ export default function Home() {
   const startButtonRef = useRef(null);
   const inputLanguages = [
     { value: "vb", label: "VB" },
-    { value: "json", label: "JSON" },
+    // { value: "json", label: "JSON" },
   ];
   const options = [
     // { value: 0, label: "Public" },
