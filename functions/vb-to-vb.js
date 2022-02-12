@@ -110,38 +110,63 @@ export default function vbToVb(text) {
   const getProperty = (inputString) => {
     const words = inputString.match(/\S+/g);
     let property = null;
-
-    switch (words.length) {
-      case 4:
-        property = {
-          name: words[1].trim(),
-          type: words[3].trim(),
-          defaultValue: null,
-        };
-        break;
-      case 5:
-        property = {
-          name: words[2].trim(),
-          type: words[4].trim(),
-          defaultValue: null,
-        };
-        break;
-      case 6:
-        property = {
-          name: words[1].trim(),
-          type: words[3].trim(),
-          defaultValue: words[5].trim(),
-        };
-        break;
-      case 7:
-        property = {
-          name: words[2].trim(),
-          type: words[4].trim(),
-          defaultValue: words[6].trim(),
-        };
-        break;
+    const foundList = findWord(words, "List(Of");
+    if (foundList !== undefined) {
+      switch (words.length) {
+        case 5:
+          property = {
+            name: words[1].trim(),
+            type: words.slice(3).join(" ").trim(),
+            defaultValue: null,
+          };
+          break;
+        case 6:
+          property = {
+            name: words[2].trim(),
+            type: words.slice(4).join(" ").trim(),
+            defaultValue: null,
+          };
+          break;
+      }
+    } else {
+      switch (words.length) {
+        case 4:
+          property = {
+            name: words[1].trim(),
+            type: words[3].trim(),
+            defaultValue: null,
+          };
+          break;
+        case 5:
+          property = {
+            name: words[2].trim(),
+            type: words[4].trim(),
+            defaultValue: null,
+          };
+          break;
+        case 6:
+          property = {
+            name: words[1].trim(),
+            type: words[3].trim(),
+            defaultValue: words[5].trim(),
+          };
+          break;
+        case 7:
+          property = {
+            name: words[2].trim(),
+            type: words[4].trim(),
+            defaultValue: words[6].trim(),
+          };
+          break;
+      }
     }
     return property;
+  };
+
+  const findWord = (words, keyword) => {
+    return words.find((element) => {
+      return element.toLowerCase() === keyword.toLowerCase();
+    });
   };
 
   const generateOutputText = ({
@@ -184,5 +209,6 @@ export default function vbToVb(text) {
     outputText += wrapper[1];
     return outputText;
   };
+
   return textProcessor(text);
 }

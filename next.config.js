@@ -21,7 +21,12 @@ module.exports = withTM({
         /[\\/]node_modules[\\/]monaco-editor[\\/]/,
       ];
     }
-
+    config.optimization.splitChunks = {
+      cacheGroups: {
+        default: false,
+      },
+    };
+    config.optimization.runtimeChunk = false;
     config.plugins.push(
       new MonacoWebpackPlugin({
         languages: [
@@ -37,7 +42,7 @@ module.exports = withTM({
           // "json",
           "vb",
         ],
-        filename: "static/[name][hash:8].worker.js",
+        filename: "static/[name].worker.js",
       })
     );
     return config;
